@@ -1,5 +1,5 @@
-const result = document.querySelector(".result"); /*PEGA A REF PRO RESULTADO NO VISOR */
-const buttons = document.querySelectorAll(".buttons button");/*TODOS OS BOTAO DO HTML*/
+const result = document.querySelector(".result"); /*ref redultado visor*/
+const buttons = document.querySelectorAll(".buttons button");/*todos os botoes do html*/
 
 
 /*VARIAVEIS*/
@@ -14,20 +14,19 @@ function updateDisplay() {
 }
 
 
-function clearEntry() { // remove o ultimo caractere do displayvalue FAZER FUNCIONAR
+function clearEntry() { // remove o ultimo caractere do displayvalue 
   currentNumber = currentNumber.slice(0, -1);
   displayValue = currentNumber || "0"; // Define o visor para 0 se estiver vazio
   updateDisplay()
   
 }
 
-/*FUNÇAO UPDATE RESULTE*/
+/*função que atualiza o resultado do visor*/
 function updateResult(originClear = false) { /*RECEBE UM PARAMETRO*//*É O QUE ATUALIZA O RESULTADO*/
-  result.innerText = originClear ? 0 : currentNumber.replace(".", ",");/*VEM DO CLEAR ATUALIZA PRA ZERO SE NAO PEGA O NUMERO ATUAL*/
+  result.innerText = originClear ? 0 : currentNumber;/*VEM DO CLEAR ATUALIZA PRA ZERO SE NAO PEGA O NUMERO ATUAL*/
 }
 
-function addDigit(digit) { /*verifica de estou clicando no botão da , e se ja tem alguma , no visor*/
-  if (digit === "," && (currentNumber.includes(",") || !currentNumber)) return;
+function addDigit(digit) {
 
   if (restart) {  /*variavel restart que vai ser true apenas quando calcular */
     currentNumber = digit;
@@ -36,14 +35,14 @@ function addDigit(digit) { /*verifica de estou clicando no botão da , e se ja t
     currentNumber += digit;/*continua concatenando*/
   }
 
-  updateResult();/*atualiza em tela*/
+  updateResult();/*atualiza o visor*/
 }
 
 function setOperator(newOperator) { /*se toca num operador ele ja efetua o calculo*/
   if (currentNumber) { /*verifica se tem numero atual*/  
     calculate();
 
-    firstOperand = parseFloat(currentNumber.replace(",", "."));
+    firstOperand = parseFloat(currentNumber);
     currentNumber = "";
   }
 
@@ -52,7 +51,7 @@ function setOperator(newOperator) { /*se toca num operador ele ja efetua o calcu
 
 function calculate() { /*faz o calculo*/
   if (operator === null || firstOperand === null) return;
-  let secondOperand = parseFloat(currentNumber.replace(",", "."));
+  let secondOperand = parseFloat(currentNumber);
   let resultValue;/*variavel*/
 
   switch (operator) { /*switch para os operadores */
@@ -74,9 +73,6 @@ function calculate() { /*faz o calculo*/
 
   
   currentNumber = resultValue.toString();
-  if (resultValue.toString().split(".")[1]?.length > 5) {
-    currentNumber = parseFloat(resultValue.toFixed(5)).toString();
-  }
 
   operator = null;
   firstOperand = null;
@@ -98,10 +94,6 @@ function setPercentage() { /*a porcentagem*/
     result = result * (firstOperand || 1);
   }
 
-  if (result.toString().split(".")[1]?.length > 5) { /*verificação*/
-    result = result.toFixed(5).toString();
-  }
-
   currentNumber = result.toString();
   updateResult();
 }
@@ -109,7 +101,7 @@ function setPercentage() { /*a porcentagem*/
 buttons.forEach((button) => {
   button.addEventListener("click", () => { /*add evento de click*/
     const buttonText = button.innerText; /*cria variavel button text (pega texto do botao que clica)*/
-    if (/^[0-9,]+$/.test(buttonText)) { /*verificação com regecs*/
+    if (/^[0-9,]+$/.test(buttonText)) { /*verificação com regecs, verifica se é um digito*/
       addDigit(buttonText); /*chama função de digit que add digito no resultado*/
     } else if (["+", "-", "×", "÷"].includes(buttonText)) { /* colocados no array verifica se o botão clicado é um operador*/
       setOperator(buttonText);
